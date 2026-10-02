@@ -5,3 +5,9 @@ dist/
 .claude/
 *.env
 sampler-captures/
+
+# Vitest browser-mode failure screenshots
+__screenshots__/
+
+# Lockfile (not tracked for this library)
+package-lock.json

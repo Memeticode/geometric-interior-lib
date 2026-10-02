@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`snapshots > dark bloom, chaotic (en) 1`] = `
+{
+  "long": "From impenetrable blackness, forms surface carrying barely perceptible light, diffuse atmospheric glow filling the space until forms and light become inseparable. A balanced arrangement of geometric forms occupies the space with moderate scatter, a blend of flowing curves and crystalline edges. Geometric planes disperse in every direction without preferred orientation. Muted ruby hues shift subtly across a narrow desaturated palette, suggesting memory more than presence. 1234 points of white light diffuse broadly through the composition, each orb dissolving into atmospheric radiance. The structure recalls a room made of light, walls dissolving into geometry, splintered into a constellation of crystalline debris. Glowing from within its own darkness like a deep-sea creature, a liminal haze softens every edge, the scene suspended between visibility and dream.",
+  "short": "1234 luminous points anchor moderate translucent ruby geometric forms that scatter chaotically against darkness, in radiant haze.",
+  "title": "Spatial Shadowed Geometry",
+}
+`;
+
+exports[`snapshots > dark bloom, chaotic (es) 1`] = `
+{
+  "long": "Desde una negrura impenetrable, las formas emergen portando luz apenas perceptible, un brillo atmosférico difuso llenando el espacio hasta que formas y luz se vuelven inseparables. Una disposición equilibrada de formas geométricas ocupa el espacio con dispersión moderada, una fusión de curvas fluidas y bordes cristalinos. Los planos geométricos se dispersan en toda dirección sin orientación preferente. Matices rubí apagados cambian sutilmente en una paleta desaturada estrecha, sugiriendo memoria más que presencia. 1234 puntos de luz blanca se difunden ampliamente por la composición, cada orbe disolviéndose en radiancia atmosférica. La estructura recuerda una habitación hecha de luz, paredes disolviéndose en geometría, astillada en una constelación de escombros cristalinos. Brillando desde dentro de su propia oscuridad como una criatura abisal, una bruma liminal suaviza cada borde, la escena suspendida entre visibilidad y sueño.",
+  "short": "1234 puntos luminosos anclan moderadas formas geométricas translúcidas en rubí que se esparcen caóticamente contra la oscuridad, en bruma.",
+  "title": "Geometría Espacial Ensombrecido",
+}
+`;
+
+exports[`snapshots > defaults (en) 1`] = `
+{
+  "long": "Moderate illumination fills the space, geometry neither hidden nor fully exposed, light extending noticeably beyond every edge. Translucent planes overlap and drift apart in measured fragmentation, a blend of flowing curves and crystalline edges. Geometry organizes loosely around organic currents, structure present but unhurried. Muted cerulean hues shift subtly across a narrow desaturated palette, suggesting memory more than presence. 412 luminous points scatter amongst the geometry like stars in a constellation, their halos softly visible. The composition suggests water crystallized at the moment of movement, carved from fractured crystal. Growing at the pace of geology, warmth radiates from within, the geometry alive with internal fire.",
+  "short": "412 luminous points anchor moderate translucent cerulean geometric forms that flow loosely against darkness, with soft halos.",
+  "title": "Tempered Teal Dimensional",
+}
+`;
+
+exports[`snapshots > defaults (es) 1`] = `
+{
+  "long": "Una iluminación moderada llena el espacio, la geometría ni oculta ni plenamente expuesta, la luz extendiéndose notablemente más allá de cada borde. Planos translúcidos se superponen y separan en fragmentación mesurada, una fusión de curvas fluidas y bordes cristalinos. La geometría se organiza libremente alrededor de corrientes orgánicas, estructura presente pero sin prisa. Matices cerúleo apagados cambian sutilmente en una paleta desaturada estrecha, sugiriendo memoria más que presencia. 412 puntos luminosos se dispersan entre la geometría como estrellas en una constelación, sus halos suavemente visibles. La composición sugiere agua cristalizada en el momento del movimiento, tallada de cristal fracturado. Creciendo al paso de la geología, la calidez irradia desde dentro, la geometría viva con fuego interior.",
+  "short": "412 puntos luminosos anclan moderadas formas geométricas translúcidas en cerúleo que fluyen libremente contra la oscuridad, con halos.",
+  "title": "Marino Dimensional Sereno",
+}
+`;

@@ -37,6 +37,7 @@ export interface RenderedImage {
 export async function renderImage(config: RenderStillConfig, width: number): Promise<RenderedImage> {
     const height = config.height;
     const canvas = createCanvas(width, height);
+    requireWebGL2(canvas);
 
     const renderer = new THREE.WebGLRenderer({
         canvas: canvas as HTMLCanvasElement,
@@ -134,10 +135,43 @@ function placeCamera(camera: THREE.PerspectiveCamera, baseDistance: number, cam:
 /** An offscreen canvas where supported (including workers), otherwise a detached DOM canvas. */
 function createCanvas(width: number, height: number): OffscreenCanvas | HTMLCanvasElement {
     if (typeof OffscreenCanvas !== 'undefined') return new OffscreenCanvas(width, height);
+    if (typeof document === 'undefined') {
+        throw new Error(
+            'WebGL2 unavailable: renderStill needs a browser with WebGL2, ' +
+            'but this environment has no canvas (no OffscreenCanvas or document). It cannot run in Node.js.',
+        );
+    }
     const canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
     return canvas;
+}
+
+/**
+ * The exact attributes three.js requests for its context (r172). A canvas
+ * returns the same context to every later getContext('webgl2') call, so
+ * three.js picks up this one unchanged; keep these in sync with three's
+ * defaults plus our preserveDrawingBuffer, or pixels may change.
+ */
+const CONTEXT_ATTRIBUTES: WebGLContextAttributes = {
+    alpha: true,
+    depth: true,
+    stencil: false,
+    antialias: false,
+    premultipliedAlpha: true,
+    preserveDrawingBuffer: true,
+    powerPreference: 'default',
+    failIfMajorPerformanceCaveat: false,
+};
+
+/** Create the canvas's WebGL2 context, or throw a clear error if the browser can't. */
+function requireWebGL2(canvas: OffscreenCanvas | HTMLCanvasElement): void {
+    if (!canvas.getContext('webgl2', CONTEXT_ATTRIBUTES)) {
+        throw new Error(
+            'WebGL2 unavailable: this browser could not create a WebGL2 context. ' +
+            'It may be unsupported, disabled, or blocked (for example, with hardware acceleration turned off).',
+        );
+    }
 }
 
 function encodePng(canvas: OffscreenCanvas | HTMLCanvasElement): Promise<Blob> {

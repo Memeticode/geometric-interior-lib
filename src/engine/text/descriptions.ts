@@ -2,7 +2,7 @@
  * Short and long text descriptions from controls.
  *
  *   short: a brief summary, <=140 chars
- *   long:  interpretive prose, <=1000 chars
+ *   long:  interpretive prose, <=2000 chars (a safety cap; real text stays near 1000)
  */
 
 import type { Locale, SeedConfig, StillControlsConfig as Controls } from '../../config.js';
@@ -171,7 +171,7 @@ function buildCoda(seed: SeedConfig, controls: Controls, rng: () => number, l: L
 /* ── Main entry point ── */
 
 const SHORT_MAX = 140;
-const LONG_MAX = 1000;
+const LONG_MAX = 2000;
 
 export interface Descriptions {
     short: string;

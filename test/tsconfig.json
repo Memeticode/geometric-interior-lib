@@ -1,0 +1,9 @@
+{
+  // Type-checks the tests and the Vitest config. Never emits: tests aren't published.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".."
+  },
+  "include": ["../src", ".", "../vitest.config.ts"]
+}

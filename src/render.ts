@@ -13,8 +13,12 @@ import type { RenderStillResult } from './result.js';
  * Render a still image, with its title and short and long descriptions.
  *
  * Every field is optional and falls back to defaults. The config is always
- * validated, so plain JS callers get the same checks as typed ones;
- * an invalid config rejects with an Error listing every problem.
+ * validated, so plain JS callers get the same checks as typed ones.
+ *
+ * Runs in a browser, on the main thread or in a worker, and needs WebGL2.
+ * Rejects with an Error whose message starts with:
+ * - "Invalid render config:" listing every problem, checked first.
+ * - "WebGL2 unavailable:" when there's no canvas (e.g. Node.js) or the browser can't create a WebGL2 context.
  */
 export async function renderStill(config: RenderStillConfigInput = {}): Promise<RenderStillResult> {
     const parsed = parseRenderStillConfig(config);
