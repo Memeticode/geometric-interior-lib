@@ -24,8 +24,9 @@ function* randomInputs(count: number) {
     }
 }
 
-// The en/es snapshots were checked against the original app's text output when the
-// engine was ported. A changed snapshot means generated text changed for users.
+// The en snapshots (and es, apart from its short description, which was later
+// rewritten to fit 140 characters) were checked against the original app's text
+// when the engine was ported. A changed snapshot means generated text changed for users.
 describe('snapshots', () => {
     const cases: { name: string; controls: StillControlsConfig; seed: SeedConfig; nodeCount: number }[] = [
         { name: 'defaults', controls: DEFAULT_STILL_CONTROLS, seed: DEFAULT_SEED, nodeCount: 412 },
@@ -146,9 +147,9 @@ describe('assembly in every language', () => {
         expect(generateDescriptions(DEFAULT_STILL_CONTROLS, count, DEFAULT_SEED, 'ru').short.startsWith(start)).toBe(true);
     });
 
-    // en/es keep the original app's templates (and its truncation rates: ~14% / ~85% here);
-    // the newer languages were written to fit.
-    it.each(['fr', 'it', 'zh', 'ru'] as Locale[])('rarely truncates the short description (%s)', (locale) => {
+    // en keeps the original app's template (and its ~14% truncation rate here);
+    // the other languages were written or tightened to fit.
+    it.each(LOCALES.filter(l => l !== 'en'))('rarely truncates the short description (%s)', (locale) => {
         // A truncated summary loses its closing phrase.
         let truncated = 0;
         const inputs = [...randomInputs(1000)];

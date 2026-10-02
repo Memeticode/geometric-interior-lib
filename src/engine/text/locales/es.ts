@@ -1,5 +1,8 @@
 /**
  * Spanish text. See ../locale-text.ts for how the pieces are assembled.
+ *
+ * Agreement: summary nouns (summary.scale) are all feminine plural so the
+ * summary's adjectives agree with them. Hue words follow "color" ("color cerúleo").
  */
 
 import type { LocaleText } from '../locale-text.js';
@@ -62,31 +65,31 @@ export const es: LocaleText = {
             /* sharp */ ['angulares', 'afiladas'],
         ],
         scale: [
-            /* slabs */ ['losas', 'paneles'],
-            /* planes */ ['planos', 'placas'],
-            /* forms */ ['formas', 'planos'],
-            /* fragments */ ['fragmentos', 'esquirlas'],
-            /* particles */ ['partículas', 'puntos'],
+            /* slabs */ ['losas', 'láminas'],
+            /* planes */ ['placas', 'superficies'],
+            /* forms */ ['formas', 'facetas'],
+            /* fragments */ ['esquirlas', 'astillas'],
+            /* particles */ ['partículas', 'chispas'],
         ],
         arrangement: [
             /* chaotic-radial */ ['derivan libremente', 'se dispersan sin orden'],
-            /* chaotic-organic */ ['se dispersan en toda dirección', 'se esparcen caóticamente'],
+            /* chaotic-organic */ ['se dispersan en todas direcciones', 'se esparcen caóticamente'],
             /* chaotic-orbital */ ['se agitan en desorden', 'se dispersan turbulentamente'],
             /* loose-radial */ ['irradian vagamente', 'se extienden desde el centro'],
-            /* loose-organic */ ['derivan en trayectorias orgánicas', 'fluyen libremente'],
+            /* loose-organic */ ['siguen cauces orgánicos', 'fluyen libremente'],
             /* loose-orbital */ ['espiralan suavemente', 'orbitan sueltas'],
             /* structured-radial */ ['emanan radialmente', 'irradian desde el centro'],
             /* structured-organic */ ['siguen un flujo coherente', 'fluyen en formación'],
-            /* structured-orbital */ ['orbitan en arcos', 'se envuelven en bandas orbitales'],
+            /* structured-orbital */ ['orbitan en arcos', 'giran en anillos'],
         ],
         bloom: [
             /* tight */ ['con luz concentrada', 'con luz precisa'],
             /* contained */ ['con brillo contenido', 'con radiancia ajustada'],
             /* soft */ ['con halos suaves', 'con resplandor gentil'],
             /* spreading */ ['con luz expansiva', 'con halos luminosos'],
-            /* atmospheric */ ['en brillo atmosférico difuso', 'en bruma radiante'],
+            /* atmospheric */ ['en un brillo difuso', 'en bruma radiante'],
         ],
-        compose: p => `${p.nodeCount} puntos luminosos anclan ${p.density} ${p.scale} geométricas ${p.faceting} en ${p.hue ?? 'acromáticas'} que ${p.arrangement} contra la oscuridad, ${p.bloom}.`,
+        compose: p => `${p.nodeCount} puntos luminosos anclan ${p.scale} ${p.density} y ${p.faceting}, ${p.hue ? `color ${p.hue}` : 'sin color'}, que ${p.arrangement}, ${p.bloom}.`,
     },
 
     scene: {
