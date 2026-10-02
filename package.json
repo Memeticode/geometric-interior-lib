@@ -1,0 +1,30 @@
+{
+  "name": "@memeticode/geometric-interior",
+  "version": "0.1.0",
+  "description": "Geometric interior image generation",
+  "keywords": [
+    "generative-art",
+    "webgl",
+    "three",
+    "procedural",
+    "art",
+    "geometry",
+    "portrait",
+    "self-portrait"
+  ],
+  "homepage": "https://github.com/Memeticode/geometric-interior-lib#readme",
+  "bugs": {
+    "url": "https://github.com/Memeticode/geometric-interior-lib/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Memeticode/geometric-interior-lib.git"
+  },
+  "license": "MIT",
+  "author": "Memeticode",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"no tests yet\" && exit 1"
+  }
+}
