@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import * as api from '../../src/index.js';
 
 describe('public API', () => {
-    it('exports exactly the two functions (types are erased at runtime)', () => {
-        expect(Object.keys(api).sort()).toEqual(['parseRenderStillConfig', 'renderStill']);
+    it('exports exactly the three functions (types are erased at runtime)', () => {
+        expect(Object.keys(api).sort()).toEqual(['parseRenderStillConfig', 'randomRenderStillConfig', 'renderStill']);
     });
 });
 

@@ -35,8 +35,12 @@
     "dist"
   ],
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "tsc",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit && tsc -p test",
     "test": "vitest run",
     "test:unit": "vitest run --project unit",

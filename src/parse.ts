@@ -120,6 +120,11 @@ export function parseRenderStillConfig(data: unknown): ParseResult<RenderStillCo
 // Internal (not exported from the package)
 // ──────────────────────────────────────
 
+/** The error thrown for an invalid config: every problem, one per line. */
+export function invalidConfigError(errors: string[]): Error {
+    return new Error(`Invalid render config:\n- ${errors.join('\n- ')}`);
+}
+
 /** Image width in pixels for a given height and aspect. */
 export function stillWidth(height: number, aspect: Aspect): number {
     const [w, h] = aspect.split(':').map(Number) as [number, number];

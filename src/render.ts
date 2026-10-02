@@ -6,7 +6,7 @@ import type { RenderStillConfigInput } from './config.js';
 import { renderImage } from './engine/renderer.js';
 import { generateDescriptions } from './engine/text/descriptions.js';
 import { generateTitle } from './engine/text/title.js';
-import { parseRenderStillConfig, stillWidth } from './parse.js';
+import { invalidConfigError, parseRenderStillConfig, stillWidth } from './parse.js';
 import type { RenderStillResult } from './result.js';
 
 /**
@@ -22,9 +22,7 @@ import type { RenderStillResult } from './result.js';
  */
 export async function renderStill(config: RenderStillConfigInput = {}): Promise<RenderStillResult> {
     const parsed = parseRenderStillConfig(config);
-    if (!parsed.ok) {
-        throw new Error(`Invalid render config:\n- ${parsed.errors.join('\n- ')}`);
-    }
+    if (!parsed.ok) throw invalidConfigError(parsed.errors);
 
     const resolved = parsed.config;
     const width = stillWidth(resolved.height, resolved.aspect);

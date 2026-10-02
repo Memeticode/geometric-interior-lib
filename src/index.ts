@@ -6,6 +6,7 @@
 // Functions
 export { renderStill } from './render.js';
 export { parseRenderStillConfig } from './parse.js';
+export { randomRenderStillConfig } from './random.js';
 
 // Config types (input)
 export type {

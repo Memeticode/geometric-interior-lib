@@ -3,7 +3,7 @@ import { ASPECTS, LOCALES, type RenderStillConfigInput } from '../../src/config.
 import { generateDescriptions } from '../../src/engine/text/descriptions.js';
 import { generateTitle } from '../../src/engine/text/title.js';
 import { parseRenderStillConfig, stillWidth } from '../../src/parse.js';
-import { renderStill } from '../../src/index.js';
+import { randomRenderStillConfig, renderStill } from '../../src/index.js';
 import type { RenderStillResult } from '../../src/result.js';
 
 // Small images keep software WebGL fast; the full default size is tested once.
@@ -74,6 +74,13 @@ describe('renderStill', () => {
             short: result.shortDescription,
             long: result.longDescription,
         });
+    });
+
+    it('renders a random config', async () => {
+        const config = randomRenderStillConfig({ height: SMALL });
+        const result = await renderStill(config);
+        expect(result.config).toEqual(config);
+        expect((await inspect(result.image)).height).toBe(SMALL);
     });
 
     it('is deterministic: the same config gives identical PNG bytes', async () => {
