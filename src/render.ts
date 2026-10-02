@@ -3,11 +3,14 @@
  */
 
 import type { RenderStillConfigInput } from './config.js';
-import { parseRenderStillConfig } from './parse.js';
+import { renderImage } from './engine/renderer.js';
+import { generateDescriptions } from './engine/text/descriptions.js';
+import { generateTitle } from './engine/text/title.js';
+import { parseRenderStillConfig, stillWidth } from './parse.js';
 import type { RenderStillResult } from './result.js';
 
 /**
- * Render a still image and its title and alt text.
+ * Render a still image, with its title and short and long descriptions.
  *
  * Every field is optional and falls back to defaults. The config is always
  * validated, so plain JS callers get the same checks as typed ones;
@@ -19,7 +22,19 @@ export async function renderStill(config: RenderStillConfigInput = {}): Promise<
         throw new Error(`Invalid render config:\n- ${parsed.errors.join('\n- ')}`);
     }
 
-    // TODO: build the scene, render at stillWidth(height, aspect) × height,
-    // encode as PNG, and generate the title and alt text in config.locale.
-    throw new Error('renderStill: not implemented yet');
+    const resolved = parsed.config;
+    const width = stillWidth(resolved.height, resolved.aspect);
+
+    const { image, nodeCount } = await renderImage(resolved, width);
+    const descriptions = generateDescriptions(resolved.controls, nodeCount, resolved.seed, resolved.locale);
+
+    return {
+        image,
+        width,
+        height: resolved.height,
+        title: generateTitle(resolved.controls, resolved.seed, resolved.locale),
+        shortDescription: descriptions.short,
+        longDescription: descriptions.long,
+        config: resolved,
+    };
 }

@@ -42,6 +42,11 @@
     "test": "echo \"no tests yet\" && exit 1"
   },
   "devDependencies": {
+    "@types/three": "^0.172.0",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "postprocessing": "^6.39.5",
+    "three": "^0.172.0"
   }
 }
