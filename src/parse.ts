@@ -5,8 +5,9 @@
  * clamped or ignored, so mistakes surface instead of silently changing the image.
  */
 
-import { LOCALES } from './config.js';
+import { ASPECTS, LOCALES } from './config.js';
 import type {
+    Aspect,
     Locale,
     RenderStillConfig,
     RenderStillConfigInput,
@@ -57,13 +58,18 @@ const STILL_CONTROLS_SPEC: Record<keyof StillControlsConfig, NumberSpec> = {
 };
 
 const STILL_CAMERA_SPEC: Record<keyof StillCameraConfig, NumberSpec> = {
-    zoom: UNIT,
+    zoom: { min: -100, max: 100 },
     rotation: { min: -180, max: 180 },
     elevation: { min: -90, max: 90 },
 };
 
+/** Largest allowed image side, in pixels. A sanity cap: the GPU's own limit may be lower. */
+const MAX_SIDE = 4096;
+
+const HEIGHT_SPEC: NumberSpec = { min: 1, max: MAX_SIDE, integer: true };
+
 const TOP_LEVEL_KEYS: readonly (keyof RenderStillConfigInput)[] =
-    ['version', 'locale', 'seed', 'controls', 'camera'];
+    ['version', 'locale', 'aspect', 'height', 'seed', 'controls', 'camera'];
 
 // ──────────────────────────────────────
 // Public API
@@ -88,12 +94,36 @@ export function parseRenderStillConfig(data: unknown): ParseResult<RenderStillCo
     if (data.locale !== undefined && !isLocale(data.locale)) {
         errors.push(`locale: must be one of ${LOCALES.join(', ')}`);
     }
+    if (data.aspect !== undefined && !isAspect(data.aspect)) {
+        errors.push(`aspect: must be one of ${ASPECTS.join(', ')}`);
+    }
+    checkNumber(data.height, 'height', HEIGHT_SPEC, errors);
     checkSection(data.seed, 'seed', SEED_SPEC, errors);
     checkSection(data.controls, 'controls', STILL_CONTROLS_SPEC, errors);
     checkSection(data.camera, 'camera', STILL_CAMERA_SPEC, errors);
 
     if (errors.length > 0) return { ok: false, errors };
-    return { ok: true, config: resolveRenderStillConfig(data as RenderStillConfigInput) };
+
+    // Width depends on two fields, so check it once both are known to be valid.
+    const config = resolveRenderStillConfig(data as RenderStillConfigInput);
+    const width = stillWidth(config.height, config.aspect);
+    if (width < 1 || width > MAX_SIDE) {
+        return {
+            ok: false,
+            errors: [`height: gives a width of ${width} at aspect ${config.aspect}; width must be in [1, ${MAX_SIDE}]`],
+        };
+    }
+    return { ok: true, config };
+}
+
+// ──────────────────────────────────────
+// Internal (not exported from the package)
+// ──────────────────────────────────────
+
+/** Image width in pixels for a given height and aspect. */
+export function stillWidth(height: number, aspect: Aspect): number {
+    const [w, h] = aspect.split(':').map(Number) as [number, number];
+    return Math.round((height * w) / h);
 }
 
 // ──────────────────────────────────────
@@ -106,6 +136,10 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 function isLocale(value: unknown): value is Locale {
     return (LOCALES as readonly unknown[]).includes(value);
+}
+
+function isAspect(value: unknown): value is Aspect {
+    return (ASPECTS as readonly unknown[]).includes(value);
 }
 
 function checkUnknownKeys(
@@ -132,14 +166,23 @@ function checkSection(
         return;
     }
     checkUnknownKeys(value, Object.keys(spec), `${path}.`, errors);
-    for (const [key, { min, max, integer }] of Object.entries(spec)) {
-        const v = value[key];
-        if (v === undefined) continue;
-        const kind = integer ? 'an integer' : 'a number';
-        const ok = typeof v === 'number'
-            && Number.isFinite(v)
-            && (!integer || Number.isInteger(v))
-            && v >= min && v <= max;
-        if (!ok) errors.push(`${path}.${key}: must be ${kind} in [${min}, ${max}]`);
+    for (const [key, fieldSpec] of Object.entries(spec)) {
+        checkNumber(value[key], `${path}.${key}`, fieldSpec, errors);
     }
+}
+
+/** Check an optional number against its spec. */
+function checkNumber(
+    v: unknown,
+    path: string,
+    { min, max, integer }: NumberSpec,
+    errors: string[],
+): void {
+    if (v === undefined) return;
+    const kind = integer ? 'an integer' : 'a number';
+    const ok = typeof v === 'number'
+        && Number.isFinite(v)
+        && (!integer || Number.isInteger(v))
+        && v >= min && v <= max;
+    if (!ok) errors.push(`${path}: must be ${kind} in [${min}, ${max}]`);
 }

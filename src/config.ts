@@ -15,6 +15,17 @@ export const LOCALES = ['en', 'es'] as const;
 export type Locale = (typeof LOCALES)[number];
 
 // ──────────────────────────────────────
+// Aspect
+// ──────────────────────────────────────
+
+/**
+ * Supported image shapes, as width:height. Changes the framing, not the scene.
+ */
+export const ASPECTS = ['20:13', '16:9', '3:2', '4:3', '1:1', '3:4', '2:3', '9:16', '13:20'] as const;
+
+export type Aspect = (typeof ASPECTS)[number];
+
+// ──────────────────────────────────────
 // Seed
 // ──────────────────────────────────────
 
@@ -78,7 +89,7 @@ export type StillControlsConfigInput = Partial<StillControlsConfig>;
 // ──────────────────────────────────────
 
 export interface StillCameraConfig {
-    /** Zoom in or out amount, [-100, 100]: 0 = far, 1 = close. Default 0. */
+    /** Zoom in or out amount, [-100, 100]: -100 = far, 100 = close. Default 0. */
     zoom: number;
     /** Degrees around the vertical axis, [-180, 180]. Default 0. */
     rotation: number;
@@ -98,6 +109,13 @@ export interface RenderStillConfig {
     version: 1;
     /** Language for generated text. Does not affect the image. */
     locale: Locale;
+    /** Image shape, width:height. Does not change the scene, only how much of it is framed. */
+    aspect: Aspect;
+    /**
+     * Image height in pixels, an integer in [1, 4096]. Default 1040.
+     * Width follows from aspect, rounded, and must also be in [1, 4096].
+     */
+    height: number;
     seed: SeedConfig;
     controls: StillControlsConfig;
     camera: StillCameraConfig;
@@ -107,6 +125,8 @@ export interface RenderStillConfig {
 export interface RenderStillConfigInput {
     version?: 1;
     locale?: Locale;
+    aspect?: Aspect;
+    height?: number;
     seed?: SeedConfigInput;
     controls?: StillControlsConfigInput;
     camera?: StillCameraConfigInput;

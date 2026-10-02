@@ -3,6 +3,7 @@
  */
 
 import type {
+    Aspect,
     Locale,
     RenderStillConfig,
     RenderStillConfigInput,
@@ -14,6 +15,11 @@ import type {
 export const CONFIG_VERSION = 1;
 
 export const DEFAULT_LOCALE: Locale = 'en';
+
+export const DEFAULT_ASPECT: Aspect = '20:13';
+
+// 1040 tall at the default 20:13 aspect gives exactly 1600 × 1040.
+export const DEFAULT_HEIGHT = 1040;
 
 export const DEFAULT_SEED: Readonly<SeedConfig> = Object.freeze({
     arrangement: 8,
@@ -50,6 +56,8 @@ export function resolveRenderStillConfig(input: RenderStillConfigInput = {}): Re
     return {
         version: CONFIG_VERSION,
         locale: input.locale ?? DEFAULT_LOCALE,
+        aspect: input.aspect ?? DEFAULT_ASPECT,
+        height: input.height ?? DEFAULT_HEIGHT,
         seed: withDefaults(DEFAULT_SEED, input.seed),
         controls: withDefaults(DEFAULT_STILL_CONTROLS, input.controls),
         camera: withDefaults(DEFAULT_STILL_CAMERA, input.camera),
