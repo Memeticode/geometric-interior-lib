@@ -15,8 +15,10 @@ export interface RenderStillResult {
     height: number;
     /** Title, in config.locale. */
     title: string;
-    /** Alt text describing the image, in config.locale. */
-    altText: string;
+    /** Short text description, in config.locale. */
+    shortDescription: string;
+    /** Long text description, in config.locale. */
+    longDescription: string;
     /** The fully resolved config. Store this to reproduce the image exactly. */
     config: RenderStillConfig;
 }
