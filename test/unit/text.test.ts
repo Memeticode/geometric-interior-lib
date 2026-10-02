@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import type { Locale, SeedConfig, StillControlsConfig } from '../../src/config.js';
+import { LOCALES, type Locale, type SeedConfig, type StillControlsConfig } from '../../src/config.js';
 import { DEFAULT_SEED, DEFAULT_STILL_CONTROLS } from '../../src/defaults.js';
 import { generateDescriptions } from '../../src/engine/text/descriptions.js';
 import { generateTitle } from '../../src/engine/text/title.js';
 import { mulberry32 } from '../../src/engine/utils/prng.js';
 
 const CONTROL_KEYS = Object.keys(DEFAULT_STILL_CONTROLS) as (keyof StillControlsConfig)[];
-const LOCALES: Locale[] = ['en', 'es'];
 
 /** Deterministic random configs, mixing extreme and in-between values. */
 function* randomInputs(count: number) {
@@ -25,7 +24,7 @@ function* randomInputs(count: number) {
     }
 }
 
-// These snapshots were checked against the original app's text output when the
+// The en/es snapshots were checked against the original app's text output when the
 // engine was ported. A changed snapshot means generated text changed for users.
 describe('snapshots', () => {
     const cases: { name: string; controls: StillControlsConfig; seed: SeedConfig; nodeCount: number }[] = [
@@ -74,7 +73,7 @@ describe('content', () => {
             expect(short.length).toBeLessThanOrEqual(140);
             // The 2000 cap is a safety net; real text stays far below it.
             expect(long.length).toBeLessThan(1500);
-            expect(long).toMatch(/[.!?]$/);
+            expect(long).toMatch(/[.!?。]$/);
         }
     });
 
@@ -84,16 +83,78 @@ describe('content', () => {
         expect(long).toContain('777');
     });
 
-    it('writes each locale in its own language', () => {
-        const en = generateDescriptions(DEFAULT_STILL_CONTROLS, 412, DEFAULT_SEED, 'en');
-        const es = generateDescriptions(DEFAULT_STILL_CONTROLS, 412, DEFAULT_SEED, 'es');
-        expect(en.short).toContain('luminous points');
-        expect(es.short).toContain('puntos luminosos');
+    it.each([
+        ['en', 'luminous points'],
+        ['es', 'puntos luminosos'],
+        ['fr', 'lumières ancrent'],
+        ['it', 'punti luminosi'],
+        ['zh', '个光点'],
+        ['ru', 'огней держат'],
+    ] as [Locale, string][])('writes %s in its own language', (locale, phrase) => {
+        expect(generateDescriptions(DEFAULT_STILL_CONTROLS, 412, DEFAULT_SEED, locale).short).toContain(phrase);
     });
 
     it('produces a non-empty title for every input', () => {
         for (const { controls, seed } of randomInputs(200)) {
-            for (const locale of LOCALES) expect(generateTitle(controls, seed, locale)).toMatch(/\S+ \S+/);
+            for (const locale of LOCALES) expect(generateTitle(controls, seed, locale).length).toBeGreaterThan(2);
         }
+    });
+});
+
+describe('assembly in every language', () => {
+    /** Every title, short, and long text for a sweep of random inputs in `locale`. */
+    function texts(locale: Locale, count = 400): string[] {
+        const out: string[] = [];
+        for (const { controls, seed, nodeCount } of randomInputs(count)) {
+            const { short, long } = generateDescriptions(controls, nodeCount, seed, locale);
+            out.push(generateTitle(controls, seed, locale), short, long);
+        }
+        return out;
+    }
+
+    it.each(LOCALES)('leaves no placeholders or missing values (%s)', (locale) => {
+        for (const text of texts(locale)) {
+            expect(text).not.toMatch(/[{}]|undefined|null|NaN/);
+        }
+    });
+
+    it.each(LOCALES.filter(l => l !== 'zh'))('has clean spacing and punctuation (%s)', (locale) => {
+        for (const text of texts(locale)) {
+            expect(text).not.toMatch(/ {2}| [,.]|[,.]{2}/);
+        }
+    });
+
+    it('writes Chinese with full-width punctuation and no spaces or Latin letters', () => {
+        for (const text of texts('zh')) {
+            expect(text).not.toMatch(/[A-Za-z ,.]/);
+            expect(text).not.toMatch(/。。|，，|，。|。，/);
+        }
+        const { short, long } = generateDescriptions(DEFAULT_STILL_CONTROLS, 412, DEFAULT_SEED, 'zh');
+        expect(short).toMatch(/。$/);
+        expect(long).toMatch(/。$/);
+    });
+
+    it.each([
+        [1, '1 огонь держит'],
+        [2, '2 огня держат'],
+        [5, '5 огней держат'],
+        [11, '11 огней держат'],
+        [21, '21 огонь держит'],
+        [22, '22 огня держат'],
+        [412, '412 огней держат'],
+    ])('makes Russian agree with the count: %i', (count, start) => {
+        expect(generateDescriptions(DEFAULT_STILL_CONTROLS, count, DEFAULT_SEED, 'ru').short.startsWith(start)).toBe(true);
+    });
+
+    // en/es keep the original app's templates (and its truncation rates: ~14% / ~85% here);
+    // the newer languages were written to fit.
+    it.each(['fr', 'it', 'zh', 'ru'] as Locale[])('rarely truncates the short description (%s)', (locale) => {
+        // A truncated summary loses its closing phrase.
+        let truncated = 0;
+        const inputs = [...randomInputs(1000)];
+        for (const { controls, seed } of inputs) {
+            if (generateDescriptions(controls, 412, seed, locale).short.length >= 138) truncated++;
+        }
+        expect(truncated / inputs.length).toBeLessThan(0.05);
     });
 });

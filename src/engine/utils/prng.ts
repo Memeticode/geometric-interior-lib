@@ -28,6 +28,6 @@ export function mulberry32(a: number): () => number {
 }
 
 /** Pick a random element from an array using an rng function. */
-export function pick(arr: string[], rng: () => number): string {
+export function pick(arr: readonly string[], rng: () => number): string {
     return arr[Math.floor(rng() * arr.length)];
 }

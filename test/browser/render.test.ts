@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ASPECTS, type RenderStillConfigInput } from '../../src/config.js';
+import { ASPECTS, LOCALES, type RenderStillConfigInput } from '../../src/config.js';
 import { generateDescriptions } from '../../src/engine/text/descriptions.js';
 import { generateTitle } from '../../src/engine/text/title.js';
 import { parseRenderStillConfig, stillWidth } from '../../src/parse.js';
@@ -59,6 +59,17 @@ describe('renderStill', () => {
         // The descriptions depend on the scene's node count, read back from the short one.
         const nodeCount = Number(result.shortDescription.split(' ')[0]);
         expect(nodeCount).toBeGreaterThan(0);
+        expect(generateDescriptions(controls, nodeCount, seed, locale)).toEqual({
+            short: result.shortDescription,
+            long: result.longDescription,
+        });
+    });
+
+    it.each(LOCALES)('generates the text in %s', async (locale) => {
+        const result = await renderStill({ locale, height: 64 });
+        const { controls, seed } = result.config;
+        const nodeCount = Number(result.shortDescription.match(/^\d+/)![0]);
+        expect(result.title).toBe(generateTitle(controls, seed, locale));
         expect(generateDescriptions(controls, nodeCount, seed, locale)).toEqual({
             short: result.shortDescription,
             long: result.longDescription,

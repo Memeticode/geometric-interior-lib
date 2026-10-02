@@ -6,6 +6,7 @@
 
 import { xmur3, mulberry32 } from '../utils/prng.js';
 import type { SeedConfig, StillControlsConfig } from '../../config.js';
+import type { LocaleText, Synonyms } from './locale-text.js';
 
 /* ── Quantization ── */
 
@@ -52,18 +53,28 @@ export function createTextRng(controls: StillControlsConfig, nodeCount: number, 
 
 /* ── Text utilities ── */
 
-/** Truncate to a character limit, breaking at a word boundary. */
-export function truncateAt(text: string, maxChars: number): string {
+/**
+ * Truncate to a character limit, breaking at a word boundary, and make sure
+ * the result ends with `period`. Text without spaces (Chinese) breaks at the limit.
+ */
+export function truncateAt(text: string, maxChars: number, period = '.'): string {
     if (text.length <= maxChars) return text;
     const cut = text.slice(0, maxChars);
     const lastSpace = cut.lastIndexOf(' ');
     const breakAt = lastSpace > maxChars * 0.6 ? lastSpace : maxChars;
-    let result = cut.slice(0, breakAt).replace(/[\s,;:\u2014\u2013-]+$/, '');
-    if (!result.endsWith('.')) result += '.';
+    // Trailing separators: ASCII, em/en dashes, and Chinese full-width comma, enumeration comma, semicolon, colon.
+    let result = cut.slice(0, breakAt).replace(/[\s,;:—–，、；：-]+$/, '');
+    if (!result.endsWith(period)) result += period;
     return result;
 }
 
-/** Join sentences, collapsing extra whitespace. */
-export function joinSentences(...parts: string[]): string {
-    return parts.filter(Boolean).join(' ').replace(/\s{2,}/g, ' ').trim();
+/** Join sentences with `separator`, collapsing extra whitespace. */
+export function joinSentences(parts: string[], separator = ' '): string {
+    return parts.filter(Boolean).join(separator).replace(/\s{2,}/g, ' ').trim();
+}
+
+/** The locale's hue words for a hue in [0, 1]. */
+export function hueWords(hue01: number, t: LocaleText): Synonyms {
+    const hueDeg = ((hue01 * 360) % 360 + 360) % 360;
+    return (t.hues.find(e => hueDeg < e.max) ?? t.hues[0]).words;
 }

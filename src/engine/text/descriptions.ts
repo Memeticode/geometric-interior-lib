@@ -3,27 +3,21 @@
  *
  *   short: a brief summary, <=140 chars
  *   long:  interpretive prose, <=2000 chars (a safety cap; real text stays near 1000)
+ *
+ * Language-neutral: every word and template comes from the locale's
+ * LocaleText (./locales/), assembled as described in ./locale-text.ts.
  */
 
 import type { Locale, SeedConfig, StillControlsConfig as Controls } from '../../config.js';
-import { getHueWords } from './word-tables.js';
 import { injectColor } from '../utils/string.js';
-import { createTextRng, pickGraded, pickOne, gradedIndex, truncateAt, joinSentences } from './text-engine.js';
-import {
-    SUM_DENSITY, SUM_FACETING, SUM_SCALE, SUM_ARRANGEMENT, SUM_BLOOM,
-    SCENE_LUM, SCENE_BLOOM,
-    GEO_FORM, GEO_FACETING, GEO_SPATIAL, GEO_DIVISION,
-    COLOR_PHRASE, LIGHT_POINTS,
-    CODA_ARRANGEMENT, CODA_STRUCTURE, CODA_DETAIL,
-    CODA_BRIDGE, CODA_INFLECTION,
-} from './banks.js';
+import type { InflectionKey, LocaleText } from './locale-text.js';
+import { LOCALE_TEXT } from './locales/index.js';
+import { createTextRng, gradedIndex, hueWords, joinSentences, pickGraded, pickOne, truncateAt } from './text-engine.js';
 
 /* ── Helpers ── */
 
-type Lang = Locale;
-
-function hueAdj(hue01: number, l: Lang): string {
-    return getHueWords(hue01, l)[0].toLowerCase();
+function hueAdj(hue01: number, t: LocaleText): string {
+    return hueWords(hue01, t)[0].toLowerCase();
 }
 
 /** 3-level index (low / mid / high) for cross-product banks. */
@@ -50,67 +44,65 @@ function divisionTier(v: number): number {
     return 1;
 }
 
+/**
+ * Fill count placeholders: {N} → the number, and {N|one|few|many} → the number
+ * plus the plural form Intl.PluralRules picks for this locale (e.g. Russian
+ * "1 точка", "2 точки", "5 точек"). Fewer forms than categories reuse the last.
+ */
+function fillCount(template: string, n: number, locale: Locale): string {
+    const category = new Intl.PluralRules(locale).select(n);
+    const index = ({ one: 0, few: 1, many: 2 } as Record<string, number>)[category] ?? 2;
+    return template
+        .replace(/\{N\|([^}]*)\}/g, (_, forms: string) => {
+            const list = forms.split('|');
+            return `${n} ${list[Math.min(index, list.length - 1)]}`;
+        })
+        .replace(/\{N\}/g, String(n));
+}
+
 /* ── Summary builder ── */
 
-function buildSummary(c: Controls, nodeCount: number, rng: () => number, l: Lang): string {
-    const density = pickGraded(SUM_DENSITY[l], c.density, rng);
-    const faceting = pickGraded(SUM_FACETING[l], c.faceting, rng);
-    const scale = pickGraded(SUM_SCALE[l], c.scale, rng);
-    const arrIdx = spatialIndex(c.coherence, c.flow);
-    const arrangement = pickOne(SUM_ARRANGEMENT[l][arrIdx], rng);
-    const bloom = pickGraded(SUM_BLOOM[l], c.bloom, rng);
-
-    // Color word: depends on chroma level
-    const chromaTier = tier3(c.chroma);
-    let colorWord: string;
-    if (chromaTier === 0) {
-        colorWord = l === 'es' ? 'acromáticas' : 'achromatic';
-    } else {
-        colorWord = hueAdj(c.hue, l);
-    }
-
-    // Build with node count guaranteed near the front to survive truncation.
-    if (l === 'es') {
-        return `${nodeCount} puntos luminosos anclan ${density} ${scale} geométricas ${faceting} en ${colorWord} que ${arrangement} contra la oscuridad, ${bloom}.`;
-    }
-
-    return `${nodeCount} luminous points anchor ${density} ${faceting} ${colorWord} geometric ${scale} that ${arrangement} against darkness, ${bloom}.`;
+function buildSummary(c: Controls, nodeCount: number, rng: () => number, t: LocaleText, locale: Locale): string {
+    const s = t.summary;
+    return fillCount(s.compose({
+        nodeCount,
+        density: pickGraded(s.density, c.density, rng),
+        faceting: pickGraded(s.faceting, c.faceting, rng),
+        scale: pickGraded(s.scale, c.scale, rng),
+        arrangement: pickOne(s.arrangement[spatialIndex(c.coherence, c.flow)], rng),
+        bloom: pickGraded(s.bloom, c.bloom, rng),
+        hue: tier3(c.chroma) === 0 ? null : hueAdj(c.hue, t),
+    }), nodeCount, locale);
 }
 
 /* ── Expanded description builders ── */
 
-function buildScene(c: Controls, rng: () => number, l: Lang): string {
-    const lum = pickGraded(SCENE_LUM[l], c.luminosity, rng);
-    const bloom = pickGraded(SCENE_BLOOM[l], c.bloom, rng);
-    return lum + bloom + '.';
+function buildScene(c: Controls, rng: () => number, t: LocaleText): string {
+    const lum = pickGraded(t.scene.luminosity, c.luminosity, rng);
+    const bloom = pickGraded(t.scene.bloom, c.bloom, rng);
+    return lum + bloom + t.punctuation.period;
 }
 
-function buildGeometry(c: Controls, rng: () => number, l: Lang): string {
+function buildGeometry(c: Controls, rng: () => number, t: LocaleText): string {
+    const g = t.geometry;
     // density (5 levels) × fracture (3 levels) = 15 combos
-    const dIdx = gradedIndex(c.density, 5);
-    const fIdx = tier3(c.fracture);
-    const formIdx = dIdx * 3 + fIdx;
-    const form = pickOne(GEO_FORM[l][formIdx], rng);
-    const faceting = pickOne(GEO_FACETING[l][gradedIndex(c.faceting, 5)], rng);
+    const formIdx = gradedIndex(c.density, 5) * 3 + tier3(c.fracture);
+    const form = pickOne(g.form[formIdx], rng);
+    const faceting = pickOne(g.faceting[gradedIndex(c.faceting, 5)], rng);
+    const spatial = pickOne(g.spatial[spatialIndex(c.coherence, c.flow)], rng);
+    const division = pickOne(g.division[divisionTier(c.division)], rng);
 
-    const spatial = pickOne(GEO_SPATIAL[l][spatialIndex(c.coherence, c.flow)], rng);
-
-    const divTier = divisionTier(c.division);
-    const division = pickOne(GEO_DIVISION[l][divTier], rng);
-
-    return joinSentences(form + faceting + '.', spatial + division);
+    return joinSentences([form + faceting + t.punctuation.period, spatial + division], t.punctuation.space);
 }
 
-function buildColor(c: Controls, nodeCount: number, rng: () => number, l: Lang): string {
-    const cIdx = colorIndex(c.chroma, c.spectrum);
-    const colorRaw = pickOne(COLOR_PHRASE[l][cIdx], rng);
-    const color = injectColor(colorRaw, hueAdj(c.hue, l));
+function buildColor(c: Controls, nodeCount: number, rng: () => number, t: LocaleText, locale: Locale): string {
+    const colorRaw = pickOne(t.color.phrase[colorIndex(c.chroma, c.spectrum)], rng);
+    const color = injectColor(colorRaw, hueAdj(c.hue, t));
 
     // Light points phrase: bloom drives the bank (5 levels)
-    const lightRaw = pickGraded(LIGHT_POINTS[l], c.bloom, rng);
-    const light = lightRaw.replace(/\{N\}/g, String(nodeCount));
+    const light = fillCount(pickGraded(t.color.lightPoints, c.bloom, rng), nodeCount, locale);
 
-    return joinSentences(color, light);
+    return joinSentences([color, light], t.punctuation.space);
 }
 
 /** Map a 0-8 family index into one of 3 meta-groups. */
@@ -127,8 +119,8 @@ function metaGroup(family9: number): number {
  * Pair inflections checked first (more specific = higher priority),
  * then single-parameter inflections. First match wins.
  */
-function paramInflection(c: Controls, rng: () => number, l: Lang): string | null {
-    const checks: Array<{ key: string; test: boolean }> = [
+function paramInflection(c: Controls, rng: () => number, t: LocaleText): string | null {
+    const checks: Array<{ key: InflectionKey; test: boolean }> = [
         // Pair inflections — two simultaneous extremes
         { key: 'darkBloom',    test: c.luminosity < 0.15 && c.bloom > 0.70 },
         { key: 'darkJewel',    test: c.luminosity < 0.15 && c.bloom < 0.20 },
@@ -144,28 +136,28 @@ function paramInflection(c: Controls, rng: () => number, l: Lang): string | null
         { key: 'densityHigh',   test: c.density > 0.85 },
     ];
     for (const { key, test } of checks) {
-        if (test) return pickOne(CODA_INFLECTION[key][l][0], rng);
+        if (test) return pickOne(t.coda.inflection[key], rng);
     }
     return null;
 }
 
-function buildCoda(seed: SeedConfig, controls: Controls, rng: () => number, l: Lang): string {
+function buildCoda(seed: SeedConfig, controls: Controls, rng: () => number, t: LocaleText): string {
     const aFamily = Math.floor(seed.arrangement / 2);  // 0-8
     const sFamily = Math.floor(seed.structure / 2);    // 0-8
     const dFamily = Math.floor(seed.detail / 2);       // 0-8
 
-    const arrangement = pickOne(CODA_ARRANGEMENT[l][aFamily], rng);
-    const structure = pickOne(CODA_STRUCTURE[l][sFamily], rng);
-    const detail = pickOne(CODA_DETAIL[l][dFamily], rng);
+    const arrangement = pickOne(t.coda.arrangement[aFamily], rng);
+    const structure = pickOne(t.coda.structure[sFamily], rng);
+    const detail = pickOne(t.coda.detail[dFamily], rng);
 
     // Bridge: parameter inflection overrides cross-slot bridge when active
-    const inflection = paramInflection(controls, rng, l);
+    const inflection = paramInflection(controls, rng, t);
     const bridgeIdx = metaGroup(aFamily) * 3 + metaGroup(dFamily);
-    const bridge = inflection ?? pickOne(CODA_BRIDGE[l][bridgeIdx], rng);
+    const bridge = inflection ?? pickOne(t.coda.bridge[bridgeIdx], rng);
 
     // Lowercase the detail opening so it flows from the bridge's comma.
     const detailLower = detail.charAt(0).toLowerCase() + detail.slice(1);
-    return arrangement + structure + bridge + ' ' + detailLower;
+    return arrangement + structure + bridge + t.punctuation.space + detailLower;
 }
 
 /* ── Main entry point ── */
@@ -187,17 +179,19 @@ export function generateDescriptions(
     controls: Controls,
     nodeCount: number,
     seed: SeedConfig,
-    l: Locale,
+    locale: Locale,
 ): Descriptions {
+    const t = LOCALE_TEXT[locale];
+    const { period, space } = t.punctuation;
     const rng = createTextRng(controls, nodeCount, seed);
 
-    const short = truncateAt(buildSummary(controls, nodeCount, rng, l), SHORT_MAX);
+    const short = truncateAt(buildSummary(controls, nodeCount, rng, t, locale), SHORT_MAX, period);
 
-    const scene = buildScene(controls, rng, l);
-    const geometry = buildGeometry(controls, rng, l);
-    const color = buildColor(controls, nodeCount, rng, l);
-    const coda = buildCoda(seed, controls, rng, l);
-    const long = truncateAt(joinSentences(scene, geometry, color, coda), LONG_MAX);
+    const scene = buildScene(controls, rng, t);
+    const geometry = buildGeometry(controls, rng, t);
+    const color = buildColor(controls, nodeCount, rng, t, locale);
+    const coda = buildCoda(seed, controls, rng, t);
+    const long = truncateAt(joinSentences([scene, geometry, color, coda], space), LONG_MAX, period);
 
     return { short, long };
 }

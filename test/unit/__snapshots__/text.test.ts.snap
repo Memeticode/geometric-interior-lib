@@ -16,6 +16,38 @@ exports[`snapshots > dark bloom, chaotic (es) 1`] = `
 }
 `;
 
+exports[`snapshots > dark bloom, chaotic (fr) 1`] = `
+{
+  "long": "De la noirceur impénétrable surgissent des formes porteuses d’une lumière à peine perceptible, une lueur atmosphérique diffuse emplissant l’espace jusqu’à rendre formes et lumière inséparables. Un agencement équilibré de formes géométriques occupe l’espace avec une dispersion modérée, un mélange de courbes fluides et d’arêtes cristallines. Les plans géométriques se dispersent en tous sens, sans orientation privilégiée. Des nuances rubis assourdies varient subtilement sur une palette étroite et désaturée, évoquant le souvenir plus que la présence. 1234 points de lumière blanche se diffusent largement dans la composition, chaque orbe se dissolvant en rayonnement atmosphérique. La structure rappelle une pièce faite de lumière, aux murs se dissolvant en géométrie, éclatée en une constellation de débris cristallins. Rayonnant depuis sa propre obscurité comme une créature des abysses, une brume liminale adoucit chaque arête, la scène suspendue entre la visibilité et le rêve.",
+  "short": "1234 lumières ancrent des formes modérées et translucides, couleur rubis, qui s’éparpillent en désordre, dans une brume rayonnante.",
+  "title": "Volume spatial et ombragé",
+}
+`;
+
+exports[`snapshots > dark bloom, chaotic (it) 1`] = `
+{
+  "long": "Dal nero impenetrabile emergono forme che portano una luce appena percettibile, un diffuso bagliore atmosferico che riempie lo spazio finché forme e luce diventano inseparabili. Una disposizione equilibrata di forme geometriche occupa lo spazio con una dispersione moderata, un intreccio di curve fluide e spigoli cristallini. I piani geometrici si disperdono in ogni direzione, senza un orientamento preferito. Sfumature rubino smorzate variano sottilmente lungo una tavolozza stretta e desaturata, evocando il ricordo più che la presenza. 1234 punti di luce bianca si diffondono ampiamente nella composizione, ogni sfera che si dissolve in radianza atmosferica. La struttura ricorda una stanza fatta di luce, con pareti che si dissolvono in geometria, scheggiata in una costellazione di detriti cristallini. Splendendo dalla propria oscurità come una creatura degli abissi, una foschia liminale ammorbidisce ogni spigolo, la scena sospesa tra visibilità e sogno.",
+  "short": "1234 punti luminosi ancorano forme moderate e traslucide, color rubino, che si sparpagliano caoticamente, in una foschia radiosa.",
+  "title": "Volume spaziale e ombroso",
+}
+`;
+
+exports[`snapshots > dark bloom, chaotic (ru) 1`] = `
+{
+  "long": "Из непроницаемой черноты всплывают формы, несущие едва уловимый свет, и рассеянное атмосферное свечение заполняет пространство, пока форма и свет не становятся неразделимы. Уравновешенное расположение геометрических форм занимает пространство с умеренным разбросом, в сочетании текучих изгибов и кристаллических граней. Геометрические плоскости расходятся во все стороны без преимущественной ориентации. Приглушённые оттенки рубина едва заметно меняются в узкой ненасыщенной палитре — скорее память, чем присутствие. 1234 точки белого света широко рассеиваются по композиции, и каждая сфера растворяется в атмосферном сиянии. Структура напоминает комнату из света, чьи стены растворяются в геометрии, с россыпью кристаллических обломков, похожей на созвездие. Светясь из собственной тьмы, как глубоководное существо, пограничная дымка смягчает каждую грань, и сцена зависает между явью и сном.",
+  "short": "1234 огня держат умеренные, полупрозрачные геометрические формы цвета рубина, которые хаотично разлетаются, в лучистой дымке.",
+  "title": "Объёмное и сумрачное строение",
+}
+`;
+
+exports[`snapshots > dark bloom, chaotic (zh) 1`] = `
+{
+  "long": "从深不可测的漆黑中，形体浮现，带着几乎难以察觉的光，弥漫的大气辉光充盈空间，直至形体与光不可分割。几何形体均衡地排布，以适度的离散占据空间，流畅曲线与晶体边缘交融。几何平面向四面八方散开，没有偏好的朝向。柔和的红宝石色调在一片狭窄而黯淡的色盘中微妙变化，更像记忆而非存在。1234个白色光点在构图中广泛弥散，每团光都消融为大气般的光辉。这一结构让人想起一间由光构成的房间，墙壁正消融为几何，迸裂成一片晶体残骸的星群。如深海生物般从自身的黑暗中发光，一层阈限般的薄雾柔化每条边缘，场景悬于可见与梦境之间。",
+  "short": "1234个光点锚定着适中而半透明的红宝石色几何形体，它们混乱地飘散，映衬着黑暗，沐浴在辉煌的薄雾里。",
+  "title": "空间阴翳几何",
+}
+`;
+
 exports[`snapshots > defaults (en) 1`] = `
 {
   "long": "Moderate illumination fills the space, geometry neither hidden nor fully exposed, light extending noticeably beyond every edge. Translucent planes overlap and drift apart in measured fragmentation, a blend of flowing curves and crystalline edges. Geometry organizes loosely around organic currents, structure present but unhurried. Muted cerulean hues shift subtly across a narrow desaturated palette, suggesting memory more than presence. 412 luminous points scatter amongst the geometry like stars in a constellation, their halos softly visible. The composition suggests water crystallized at the moment of movement, carved from fractured crystal. Growing at the pace of geology, warmth radiates from within, the geometry alive with internal fire.",
@@ -29,5 +61,37 @@ exports[`snapshots > defaults (es) 1`] = `
   "long": "Una iluminación moderada llena el espacio, la geometría ni oculta ni plenamente expuesta, la luz extendiéndose notablemente más allá de cada borde. Planos translúcidos se superponen y separan en fragmentación mesurada, una fusión de curvas fluidas y bordes cristalinos. La geometría se organiza libremente alrededor de corrientes orgánicas, estructura presente pero sin prisa. Matices cerúleo apagados cambian sutilmente en una paleta desaturada estrecha, sugiriendo memoria más que presencia. 412 puntos luminosos se dispersan entre la geometría como estrellas en una constelación, sus halos suavemente visibles. La composición sugiere agua cristalizada en el momento del movimiento, tallada de cristal fracturado. Creciendo al paso de la geología, la calidez irradia desde dentro, la geometría viva con fuego interior.",
   "short": "412 puntos luminosos anclan moderadas formas geométricas translúcidas en cerúleo que fluyen libremente contra la oscuridad, con halos.",
   "title": "Marino Dimensional Sereno",
+}
+`;
+
+exports[`snapshots > defaults (fr) 1`] = `
+{
+  "long": "Un éclairage modéré emplit l’espace, la géométrie ni cachée ni entièrement exposée, la lumière débordant nettement de chaque arête. Des plans translucides se chevauchent et s’écartent en une fragmentation mesurée, un mélange de courbes fluides et d’arêtes cristallines. La géométrie s’organise librement autour de courants organiques, structure présente mais sans hâte. Des nuances turquoise assourdies varient subtilement sur une palette étroite et désaturée, évoquant le souvenir plus que la présence. 412 points lumineux s’éparpillent dans la géométrie comme les étoiles d’une constellation, leurs halos doucement visibles. La composition suggère une eau cristallisée à l’instant du mouvement, taillée dans un cristal fracturé. Au pas de la géologie, la chaleur rayonne de l’intérieur, la géométrie vivante d’un feu intérieur.",
+  "short": "412 lumières ancrent des formes modérées et translucides, couleur turquoise, qui s’écoulent librement, avec de doux halos.",
+  "title": "Intérieur azur serein",
+}
+`;
+
+exports[`snapshots > defaults (it) 1`] = `
+{
+  "long": "Un’illuminazione moderata riempie lo spazio, la geometria né nascosta né del tutto esposta, la luce che si spinge nettamente oltre ogni spigolo. Piani traslucidi si sovrappongono e si separano in una frammentazione misurata, un intreccio di curve fluide e spigoli cristallini. La geometria si organizza liberamente attorno a correnti organiche, una struttura presente ma senza fretta. Sfumature turchese smorzate variano sottilmente lungo una tavolozza stretta e desaturata, evocando il ricordo più che la presenza. 412 punti luminosi si spargono nella geometria come stelle in una costellazione, i loro aloni dolcemente visibili. La composizione suggerisce acqua cristallizzata nell’istante del movimento, intagliata in un cristallo fratturato. Al passo della geologia, il calore si irradia dall’interno, la geometria viva di un fuoco interiore.",
+  "short": "412 punti luminosi ancorano forme moderate e traslucide, color turchese, che fluiscono liberamente, con aloni morbidi.",
+  "title": "Interno ceruleo sereno",
+}
+`;
+
+exports[`snapshots > defaults (ru) 1`] = `
+{
+  "long": "Умеренное освещение наполняет пространство: геометрия не скрыта, но и не открыта полностью, и свет заметно выходит за каждую грань. Полупрозрачные плоскости перекрываются и расходятся в размеренном дроблении, в сочетании текучих изгибов и кристаллических граней. Геометрия свободно выстраивается вокруг органических течений: структура есть, но она не спешит. Приглушённые оттенки бирюзы едва заметно меняются в узкой ненасыщенной палитре — скорее память, чем присутствие. 412 светящихся точек рассыпаны среди геометрии, как звёзды в созвездии, и их ореолы мягко различимы. Композиция наводит на мысль о воде, кристаллизованной в момент движения, из расколотого кристалла. В темпе геологических эпох, тепло исходит изнутри, и геометрия живёт внутренним огнём.",
+  "short": "412 огней держат умеренные, полупрозрачные геометрические формы цвета бирюзы, которые свободно текут, в мягких ореолах.",
+  "title": "Умеренное поле аквамарина",
+}
+`;
+
+exports[`snapshots > defaults (zh) 1`] = `
+{
+  "long": "适度的光照充满空间，几何既不隐匿，也未完全显露，光明显地溢出每条边缘。半透明平面相互交叠又各自分离，碎裂得恰到好处，流畅曲线与晶体边缘交融。几何围绕有机的流动松散地组织，结构存在却不急不缓。柔和的蓝绿色调在一片狭窄而黯淡的色盘中微妙变化，更像记忆而非存在。412个发光点如星座中的星辰散落在几何之间，光晕隐约可见。这一构图仿佛在流动瞬间结晶的水，由碎裂的水晶雕琢而成。以地质的步调生长，温暖从内部散发，几何因内在之火而鲜活。",
+  "short": "412个光点锚定着适中而半透明的蓝绿色几何形体，它们松散地流动，映衬着黑暗，光晕柔和。",
+  "title": "柔和青碧之境",
 }
 `;

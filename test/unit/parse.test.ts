@@ -70,7 +70,7 @@ describe('structure', () => {
     });
 
     it('collects every error instead of stopping at the first', () => {
-        expect(errors({ locale: 'fr', seed: { detail: 18 }, controls: { hue: 2 } })).toHaveLength(3);
+        expect(errors({ locale: 'de', seed: { detail: 18 }, controls: { hue: 2 } })).toHaveLength(3);
     });
 });
 
@@ -82,7 +82,7 @@ describe('fields', () => {
 
     it('validates locale', () => {
         expect(ok({ locale: 'es' }).locale).toBe('es');
-        expect(errors({ locale: 'fr' })).toEqual(['locale: must be one of en, es']);
+        expect(errors({ locale: 'de' })).toEqual(['locale: must be one of en, es, fr, it, zh, ru']);
     });
 
     it.each(ASPECTS)('accepts aspect %s', (aspect) => {
@@ -141,7 +141,7 @@ describe('size', () => {
     });
 
     it('reports the width only once the other fields are valid', () => {
-        expect(errors({ height: 4096, locale: 'fr' })).toEqual(['locale: must be one of en, es']);
+        expect(errors({ height: 4096, locale: 'de' })).toEqual(['locale: must be one of en, es, fr, it, zh, ru']);
     });
 });
 

@@ -9,8 +9,11 @@
 // Locale
 // ──────────────────────────────────────
 
-/** Supported languages for generated text (title, alt text, seed labels). */
-export const LOCALES = ['en', 'es'] as const;
+/**
+ * Supported languages for generated text (title and descriptions):
+ * English, Spanish, French, Italian, Mandarin Chinese (Simplified characters), Russian.
+ */
+export const LOCALES = ['en', 'es', 'fr', 'it', 'zh', 'ru'] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
