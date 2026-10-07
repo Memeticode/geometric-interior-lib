@@ -4,6 +4,8 @@ Generate abstract geometric still images from a small config: luminous transluce
 
 Rendering is deterministic: the same config gives the same image and text every time on the same browser and device.
 
+See examples at: https://geometric-interior.org/
+
 ```sh
 npm install @memeticode/geometric-interior
 ```
