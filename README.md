@@ -1,7 +1,4 @@
 # @memeticode/geometric-interior
-![317 luminous points anchor few sharp amethyst geometric shards that orbit loosely against darkness, with concentrated light.
-
-Moderate illumination fills the space, geometry neither hidden nor fully exposed, each point of light sharply defined and precisely contained. Geometric forms maintain gentle distance from one another in quiet dispersal, every surface a razor-sharp crystal face with maximum angular precision. Elements drift in loose orbital paths, gently spiraling without strict adherence. Three luminous cores divide the form, each a separate gravitational center. Full prismatic color floods the geometry, every hue vivid and luminously present. Among the structure, 317 points of white light appear as precise luminous anchors, each sharply defined against the geometry. The composition suggests a living structure, growing and reorienting, splintered into a constellation of crystalline debris. Dormant beneath frost, the air itself seems to hold its breath, light arriving through distance and fog.](<Example-01.png>)
 
 Generate abstract geometric still images from a small config: luminous translucent planes, light points, and glow, rendered with WebGL. Each image comes with a title and a short and long text description in one of six languages, written to describe that specific image (useful as alt text).
 
