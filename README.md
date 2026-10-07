@@ -83,7 +83,7 @@ Validation is strict: unknown fields and out-of-range values are errors, never s
 
 ### `randomRenderStillConfig(fixed?, random?): RenderStillConfig`
 
-Returns a complete config with a random seed and random controls (rounded to two decimals). Pass it straight to `renderStill`, or store it to render the same image later.
+Returns a complete config with a random seed, controls (rounded to two decimals), and camera (whole numbers). Pass it straight to `renderStill`, or store it to render the same image later.
 
 ```js
 import { randomRenderStillConfig, renderStill } from '@memeticode/geometric-interior';
@@ -92,11 +92,14 @@ const config = randomRenderStillConfig();
 const still = await renderStill(config);
 ```
 
-- **`fixed`** keeps any fields you set, down to individual seed and control values. `locale`, `aspect`, `height`, and `camera` are never randomized; they use your values or the defaults.
+- **`fixed`** keeps any fields you set, down to individual seed, control, and camera values. `locale`, `aspect`, and `height` are never randomized; they use your values or the defaults.
 
   ```js
   // A random French portrait image, but always violet.
   randomRenderStillConfig({ locale: 'fr', aspect: '3:4', controls: { hue: 0.78 } });
+
+  // Random everything, but from the default viewpoint.
+  randomRenderStillConfig({ camera: { zoom: 0, rotation: 0, elevation: 0 } });
   ```
 
 - **`random`** is the random number source, returning numbers in [0, 1). It defaults to `Math.random`; pass a seeded generator for reproducible results. Fixing a field never changes the other random values.

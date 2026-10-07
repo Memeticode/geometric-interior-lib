@@ -1,22 +1,31 @@
 /**
- * Random configs: a new seed and new controls, everything else as given or default.
+ * Random configs: a new seed, controls, and camera, everything else as given or default.
  */
 
-import type { RenderStillConfig, RenderStillConfigInput, SeedConfig, StillControlsConfig } from './config.js';
-import { DEFAULT_SEED, DEFAULT_STILL_CONTROLS } from './defaults.js';
+import type {
+    RenderStillConfig,
+    RenderStillConfigInput,
+    SeedConfig,
+    StillCameraConfig,
+    StillControlsConfig,
+} from './config.js';
+import { DEFAULT_SEED, DEFAULT_STILL_CAMERA, DEFAULT_STILL_CONTROLS } from './defaults.js';
 import { invalidConfigError, parseRenderStillConfig } from './parse.js';
 
 /** Highest seed field value (seed fields are integers in [0, 17]). */
 const SEED_MAX = 17;
 
+/** Camera field ranges (each symmetric around 0, the default). */
+const CAMERA_MAX: Readonly<StillCameraConfig> = { zoom: 100, rotation: 180, elevation: 90 };
+
 /**
- * A complete config with a random seed and random controls, like the original
- * app's Randomize button. Controls are rounded to two decimals so configs stay
+ * A complete config with a random seed, controls, and camera. Controls are
+ * rounded to two decimals and camera fields to whole numbers so configs stay
  * short in JSON and URLs.
  *
- * Fields set in `fixed` are kept, including individual seed and control fields;
- * locale, aspect, height, and camera are never randomized (the default camera
- * frames the scene best). Throws "Invalid render config:" if `fixed` is invalid.
+ * Fields set in `fixed` are kept, including individual seed, control, and
+ * camera fields; locale, aspect, and height are never randomized.
+ * Throws "Invalid render config:" if `fixed` is invalid.
  *
  * `random` returns numbers in [0, 1) (Math.random by default); pass a seeded
  * generator for reproducible results. Every field draws a value even when
@@ -42,5 +51,14 @@ export function randomRenderStillConfig(
         if (fixed.controls?.[key] === undefined) controls[key] = value;
     }
 
-    return { ...config, seed, controls };
+    // Drawn after the seed and controls, so those match what earlier versions
+    // produced for the same generator.
+    const camera = { ...config.camera };
+    for (const key of Object.keys(DEFAULT_STILL_CAMERA) as (keyof StillCameraConfig)[]) {
+        const max = CAMERA_MAX[key];
+        const value = Math.min(max, Math.round(random() * 2 * max) - max);
+        if (fixed.camera?.[key] === undefined) camera[key] = value;
+    }
+
+    return { ...config, seed, controls, camera };
 }
